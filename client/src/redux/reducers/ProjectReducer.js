@@ -1,5 +1,6 @@
 const initialState = {
   modalIsOpen: false,
+  posts: [],
 };
 
 export const ProjectReducer = (state = initialState, action) => {
@@ -10,6 +11,8 @@ export const ProjectReducer = (state = initialState, action) => {
       } else {
         return { ...state, modalIsOpen: false };
       }
+    case "GET_POST":
+      return { ...state, posts: action.data };
     default:
       return { ...state };
   }

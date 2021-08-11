@@ -1,29 +1,48 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { openModalAction } from "../../redux/actions/ProjectAction";
+import { useDropzone } from "react-dropzone";
 
 function Modal() {
- 
   const { modalIsOpen } = useSelector((state) => state.ProjectReducer);
   const dispatch = useDispatch();
+
+  const onDrop = useCallback((acceptedFiles) => {
+    console.log(acceptedFiles);
+  }, []);
+  const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
+    useDropzone({ onDrop, maxFiles: 1, maxSize: 10485760 });
+
+  const acceptedFileItems = acceptedFiles.map((file) => (
+    <p key={file.path}>
+      {file.path} - {(file.size / (1024 * 1024)).toFixed(2)}MB
+    </p>
+  ));
+
+  const dragChecker = () => {
+    if (isDragActive) {
+      return <p className="text-center">Drop here</p>;
+    } else if (acceptedFiles.length !== 0) {
+      return acceptedFileItems;
+    } else {
+      return (
+        <>
+          <span className="font-medium text-indigo-600 hover:text-indigo-500">
+            Upload a file
+          </span>
+          <p class="pl-1">or drag and drop</p>
+        </>
+      );
+    }
+  };
 
   const modalHanlder = () => {
     dispatch(openModalAction(false));
   };
   return (
     <>
-      {/* <div className="fixed inset-0 flex items-center justify-center">
-        <button
-          type="button"
-          onClick={openModal}
-          className="px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-        >
-          Open dialog
-        </button>
-      </div> */}
-
       <Transition appear show={modalIsOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -104,30 +123,53 @@ function Modal() {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block mb-2 text-sm">
-                    Attachment
+                  <label className="block text-sm font-medium text-gray-700">
+                    Cover photo
                   </label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
-                  />
+                  <div
+                    {...getRootProps()}
+                    className="mt-1 cursor-pointer flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
+                  >
+                    <div className="space-y-1 text-center">
+                      <div className="flex text-sm text-gray-600">
+                        <input
+                          {...getInputProps()}
+                          id="file-upload"
+                          name="file-upload"
+                          type="file"
+                          className="sr-only"
+                        />
+                        {dragChecker()}
+                      </div>
+                      {acceptedFiles.length !== 0 ? null : (
+                        <p className="text-xs text-gray-500">
+                          PNG, JPG, GIF up to 10MB
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                {/* <div className="mt-4">
+
+                <div className="mt-4">
                   <button
                     type="button"
                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                    onClick={closeModal}
+                    onClick={() => {
+                      modalHanlder();
+                    }}
                   >
                     Post
                   </button>
                   <button
                     type="button"
                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-red-900 bg-red-100 border border-transparent rounded-md hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 ml-4"
-                    onClick={closeModal}
+                    onClick={() => {
+                      modalHanlder();
+                    }}
                   >
                     Cancel
                   </button>
-                </div> */}
+                </div>
               </div>
             </Transition.Child>
           </div>
