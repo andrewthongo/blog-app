@@ -1,10 +1,17 @@
-import './App.css';
+import "./App.css";
+import Home from "./components/home/Home";
+import Homepage from "./components/pages/Homepage";
+import { Switch } from "react-router-dom";
+import Modal from "./components/modal/Modal";
 
 function App() {
   return (
-    <div className="App">
-      
-    </div>
+    <Switch>
+      <div>
+        <Modal />
+        <Home path="/" exact Component={Homepage} />
+      </div>
+    </Switch>
   );
 }
 
