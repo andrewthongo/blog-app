@@ -1,17 +1,34 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { openModalAction } from "../../redux/actions/ProjectAction";
+import {
+  createPostAction,
+  openModalAction,
+} from "../../redux/actions/ProjectAction";
 import { useDropzone } from "react-dropzone";
 
 function Modal() {
   const { modalIsOpen } = useSelector((state) => state.ProjectReducer);
+  const [data, setData] = useState({
+    title: "",
+    author: "",
+    content: "",
+    attachment: "",
+  });
   const dispatch = useDispatch();
 
-  const onDrop = useCallback((acceptedFiles) => {
-    console.log(acceptedFiles);
-  }, []);
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const onDrop = async (acceptedFiles) => {
+    setData({ ...data, attachment: await toBase64(acceptedFiles[0]) });
+  };
   const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
     useDropzone({ onDrop, maxFiles: 1, maxSize: 10485760 });
 
@@ -85,12 +102,16 @@ function Modal() {
                 >
                   Add Your Story
                 </Dialog.Title>
+
                 <div className="mt-2">
                   <div>
                     <label htmlFor="email" className="block mb-2 text-sm">
                       Title
                     </label>
                     <input
+                      onChange={(e) =>
+                        setData({ ...data, title: e.target.value })
+                      }
                       type="text"
                       className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
                     />
@@ -100,6 +121,9 @@ function Modal() {
                       Author
                     </label>
                     <input
+                      onChange={(e) =>
+                        setData({ ...data, author: e.target.value })
+                      }
                       type="text"
                       className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
                     />
@@ -112,6 +136,9 @@ function Modal() {
                   </label>
                   <div className="mt-1">
                     <textarea
+                      onChange={(e) =>
+                        setData({ ...data, content: e.target.value })
+                      }
                       id="about"
                       name="about"
                       rows={3}
@@ -155,6 +182,7 @@ function Modal() {
                     type="button"
                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                     onClick={() => {
+                      dispatch(createPostAction(data));
                       modalHanlder();
                     }}
                   >
