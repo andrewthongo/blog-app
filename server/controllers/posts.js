@@ -3,7 +3,6 @@ import { PostModel } from "../models/PostModel.js";
 export const getPosts = async (req, res) => {
   try {
     const posts = await PostModel.find();
-    console.log("posts", posts);
     res.status(200).json(posts);
   } catch (err) {
     res.status(500).json({ error: err });
@@ -32,6 +31,19 @@ export const updatePost = async (req, res) => {
       updatePost,
       { new: true } // ket qua tra ve da duoc cap nhat
     );
+
+    res.status(200).json(post);
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
+
+export const deletePost = async (req, res) => {
+  try {
+    const deletePost = req.body;
+    console.log("🚀 ~ file: posts.js ~ line 44 ~ deletePost ~ deletePost", deletePost)
+
+    const post = await PostModel.deleteOne({ _id: deletePost._id });
 
     res.status(200).json(post);
   } catch (err) {
