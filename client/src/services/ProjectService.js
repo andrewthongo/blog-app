@@ -8,10 +8,10 @@ export const projectService = {
   createPost: (data) => {
     return Axios.post(`${URL}/posts`, data);
   },
-  deletePost: (data) => {
-    return Axios.post(`${URL}/posts/delete`, data);
+  deletePost: (id) => {
+    return Axios.delete(`${URL}/posts/${id}`);
   },
-  updatePost: (data) => {
-    return Axios.post(`${URL}/posts/update`, data);
+  updatePost: (id, data) => {
+    return Axios.put(`${URL}/posts/${id}`, data);
   },
 };

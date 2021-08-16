@@ -27,7 +27,7 @@ export const updatePost = async (req, res) => {
     const updatePost = req.body;
 
     const post = await PostModel.findOneAndUpdate(
-      { _id: updatePost._id },
+      { _id: req.params.id },
       updatePost,
       { new: true } // ket qua tra ve da duoc cap nhat
     );
@@ -40,10 +40,7 @@ export const updatePost = async (req, res) => {
 
 export const deletePost = async (req, res) => {
   try {
-    const deletePost = req.body;
-    console.log("🚀 ~ file: posts.js ~ line 44 ~ deletePost ~ deletePost", deletePost)
-
-    const post = await PostModel.deleteOne({ _id: deletePost._id });
+    const post = await PostModel.deleteOne({ _id: req.params.id });
 
     res.status(200).json(post);
   } catch (err) {

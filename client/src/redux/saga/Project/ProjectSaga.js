@@ -20,7 +20,7 @@ export function* getPostsTracker() {
 
 function* createPostSaga(action) {
   try {
-    const { data } = yield call(() => projectService.createPost(action.data));
+    yield call(() => projectService.createPost(action.data));
     yield put({
       type: "GET_POSTS_API",
     });
@@ -34,13 +34,8 @@ export function* createPostTracker() {
 }
 
 function* deletePostSaga(action) {
-  console.log(
-    "🚀 ~ file: ProjectSaga.js ~ line 37 ~ function*deletePostSaga ~ action",
-    action.data
-  );
-
   try {
-    const { data } = yield call(() => projectService.deletePost(action.data));
+    yield call(() => projectService.deletePost(action.data._id));
     yield put({
       type: "GET_POSTS_API",
     });
@@ -55,11 +50,8 @@ export function* deletePostTracker() {
 
 function* updatePostSaga(action) {
   try {
-    const { data } = yield call(() => projectService.updatePost(action.data));
-    console.log(
-      "🚀 ~ file: ProjectSaga.js ~ line 25 ~ function*createPost ~ data",
-      data
-    );
+    yield call(() => projectService.updatePost(action.data._id, action.data));
+
     yield put({
       type: "GET_POSTS_API",
     });

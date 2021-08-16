@@ -2,7 +2,6 @@ import React from "react";
 import Footer from "./footer/Footer";
 import Header from "./header/Header";
 import { Route } from "react-router-dom";
-import Modal from "../modal/Modal";
 
 function Home(props) {
   const { Component, ...restProps } = props;

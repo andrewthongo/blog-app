@@ -18,8 +18,6 @@ function Homepage() {
     dispatch(openModalAction(value));
   };
 
-  console.log(posts);
-
   const renderPosts = () => {
     return posts.map((post, index) => {
       return (
